@@ -7,6 +7,7 @@ Ext.define 'PEA.store.Tree',
     root:
         text: 'PostgreSQL'
         id: 'db'
+        icon: 'resources/icons/databases.png'
         expanded: true
         
     constructor: (config) ->
@@ -30,20 +31,35 @@ Ext.define 'PEA.store.Tree',
                 url = parseURL request.url
                 path = url.path.substring 1
                 
+                texts =
+                    'schemas': 'Schemas'
+                    'tables': 'Tables'
+                
                 icons = 
+                    'db': 'databases',
                     'databases': 'database',
                     'schemas': 'blueprint',
                     'tables': 'table'
+                    
+                makeIconPath = (type, text) ->
+                    if icons[type]
+                        "resources/icons/#{icons[type]}.png"
+                    else if text is 'schemas'
+                        "resources/icons/blueprints.png"
+                    else if text is 'tables'
+                        "resources/icons/tables.png"
+                    else
+                        undefined
                 
                 data = JSON.parse response.responseText
                 children = if data.type == 'table' then false else true
                 leaf = if data.type == 'tables' then true else false
                 if children
-                    data.children = data.children.map (e) ->
-                        text: e
+                    data.children = data.children.map (child) ->
+                        text: texts[child] || child
                         leaf: leaf
-                        icon: if icons[data.type] then "resources/icons/#{icons[data.type]}.png" else undefined
-                        id: "#{path}/#{e}"
+                        icon: makeIconPath(data.type, child)
+                        id: "#{path}/#{child}"
                 response.responseText = JSON.stringify data
                 
                 this.callParent arguments
