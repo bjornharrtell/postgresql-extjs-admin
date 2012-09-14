@@ -30,6 +30,11 @@ Ext.define 'PEA.store.Tree',
                 url = parseURL request.url
                 path = url.path.substring 1
                 
+                icons = 
+                    'databases': 'database',
+                    'schemas': 'blueprint',
+                    'tables': 'table'
+                
                 data = JSON.parse response.responseText
                 children = if data.type == 'table' then false else true
                 leaf = if data.type == 'tables' then true else false
@@ -37,6 +42,7 @@ Ext.define 'PEA.store.Tree',
                     data.children = data.children.map (e) ->
                         text: e
                         leaf: leaf
+                        icon: if icons[data.type] then "resources/icons/#{icons[data.type]}.png" else undefined
                         id: "#{path}/#{e}"
                 response.responseText = JSON.stringify data
                 
