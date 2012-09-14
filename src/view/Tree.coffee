@@ -1,0 +1,9 @@
+Ext.define 'PEA.view.Tree',
+    extend: 'Ext.tree.Panel'
+    alias: 'widget.tree'
+    store: 'Tree'
+
+    initComponent: ->
+    
+        this.callParent(arguments);
+    
